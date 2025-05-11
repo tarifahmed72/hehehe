@@ -21,7 +21,7 @@ const Sidebar = () => {
       {/* Sidebar */}
       <div
         className={`${isOpen ? "block" : "hidden"
-        } w-64 lg:block bg-gray-900 text-amber-50 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300 ease-in-out`}
+        } w-48 lg:block bg-gray-900 text-amber-50 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300 ease-in-out`}
       > 
 
         {/* Logout Button (Top Right) */}
