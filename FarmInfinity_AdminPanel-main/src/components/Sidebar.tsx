@@ -9,13 +9,18 @@ import { Link } from "react-router-dom";
 import keycloak from '../keycloak';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isSidebarHidden, setIsSidebarHidden] = useState(false);
+
+  const toggleSidebar = () => {
+    setIsSidebarHidden(!isSidebarHidden);
+  };
 
   return (
     <>
       {/* Mobile Menu Toggle */}
       <div className="lg:hidden p-4 bg-gray-900 text-white">
         <button onClick={() => setIsOpen(!isOpen)} className="text-2xl">
-          <HiMenu />
+          <HiMenu className="text-amber-50 hover:text-amber-300" />
         </button>
       </div>
 
@@ -23,40 +28,52 @@ const Sidebar = () => {
       <div
         className={`${
           isOpen ? "block" : "hidden"
-        } lg:block bg-gray-900 text-amber-50 w-64 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300`}
+        } ${
+          isSidebarHidden ? "w-20" : "w-64"
+        } lg:block bg-gray-900 text-amber-50 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300 ease-in-out`}
       > 
+        {/* Sidebar Toggle Button */}
+        <div className="absolute top-4 right-4 hidden lg:block">
+          <button onClick={toggleSidebar} className="text-xl text-amber-50 hover:text-amber-300">
+            <HiMenu />
+          </button>
+        </div>
+
         {/* Logout Button (Top Right) */}
-        <div className="absolute top-4 right-4">
+        {/* Position adjusted slightly to accommodate toggle button */}
+        <div className={`absolute top-4 ${isSidebarHidden ? 'left-4' : 'right-12'}`}>
           <button onClick={() => keycloak.logout()} className="text-sm text-amber-50 hover:text-amber-300">
-            Logout
+            {!isSidebarHidden && "Logout"}
           </button>
         </div>
         {/* Logo */}
-        <div className="mb-6">
+        <div className={`mb-6 ${isSidebarHidden ? 'mx-auto' : ''}`}>
           <a href="/" className="block">
             <img src="/logo.png" alt="Logo" className="h-12 w-auto mx-auto" />
           </a>
         </div>
 
         {/* Dashboard */}
-        <div className="font-semibold flex items-center gap-2 py-4 px-2 hover:bg-gray-900 rounded cursor-pointer">
+        <div className="font-semibold flex items-center gap-2 py-3 px-2 hover:bg-gray-700 rounded cursor-pointer transition-colors duration-200">
           <RiDashboardLine />
-          <Link to="/dashboard">Dashboard</Link>
+          {!isSidebarHidden && <Link to="/dashboard">Dashboard</Link>}
         </div>
 
         {/* Users */}
         <div>
-          <div className="text-sm text-gray-300 uppercase font-bold mt-6 mb-2 px-2">Users</div>
+          {!isSidebarHidden && (
+            <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Users</div>
+          )}
           <div className="space-y-2 pl-2">
-            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-800 rounded">
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <FaUsers />
-              <Link to="/staff">Staffs</Link>
+              {!isSidebarHidden && <Link to="/staff">Staffs</Link>}
             </div>
-            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-800 rounded">
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <FaUsers />
-              <Link to="/farmers">Farmers</Link>
+              {!isSidebarHidden && <Link to="/farmers">Farmers</Link>}
             </div>
-            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-800 rounded">
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <ImUsers />
               <Link to="/fpo">FPO</Link>
             </div>
@@ -73,18 +90,24 @@ const Sidebar = () => {
 
         {/* Loan Management */}
         <div>
-          <div className="text-sm text-gray-300 uppercase font-bold mt-6 mb-2 px-2">Loan Management</div>
+          {!isSidebarHidden && (
+            <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Loan Management</div>
+          )}
           <div className="space-y-2 pl-2">
-            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-800 rounded">
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <TbUserSquareRounded />
-              <span>Borrower</span>
+              {!isSidebarHidden && <span>Borrower</span>}
             </div>
-            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-800 rounded">
+            <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <TbCashBanknote />
-              <span>Loan</span>
+              {!isSidebarHidden && <span>Loan</span>}
             </div>
           </div>
         </div>
+      </div>
+      {/* This is a placeholder for the main content area. You will need to adjust your main content's layout to account for the sidebar's width. */}
+      <div className={`flex-1 transition-all duration-300 ease-in-out ${isSidebarHidden ? 'ml-20' : 'ml-64'}`}>
+        {/* Your main content goes here */}
       </div>
     </>
   );

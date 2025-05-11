@@ -62,14 +62,14 @@ const FPO = () => {
       <h1 className="text-2xl font-bold mb-6 text-gray-800">All FPOs</h1>
       <div className="overflow-x-auto">
         <table className="min-w-full leading-normal">
-          <thead className="bg-gray-200 text-gray-700 uppercase text-sm">
+ <thead className="bg-gray-100 text-gray-700 uppercase text-xs leading-normal">
             <tr>
-              <th className="px-5 py-3 text-left font-semibold">Entity Name</th>
-              <th className="px-5 py-3 text-left font-semibold">FPO ID</th>
-              <th className="px-5 py-3 text-left font-semibold">State</th>
-              <th className="px-5 py-3 text-left font-semibold">District</th>
-              <th className="px-5 py-3 text-left font-semibold">Contact</th>
-              <th className="px-5 py-3 text-center font-semibold">Active</th>
+ <th className="py-3 px-6 text-left">Entity Name</th>
+ <th className="py-3 px-6 text-left">FPO ID</th>
+ <th className="py-3 px-6 text-left">State</th>
+ <th className="py-3 px-6 text-left">District</th>
+ <th className="py-3 px-6 text-left">Contact</th>
+ <th className="py-3 px-6 text-center">Active</th>
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm">
@@ -78,25 +78,26 @@ const FPO = () => {
                 key={fpo.id}
                 onClick={() => setSelectedFPO(fpo)}
                 className="hover:bg-gray-100 cursor-pointer transition-colors duration-200"
+
               >
-                <td className="px-5 py-3 border-b border-gray-200">
-                  <p className="text-gray-900 whitespace-no-wrap">{fpo.entity_name}</p>
+ <td className="py-3 px-6 border-b border-gray-200 text-sm">
+ <p className="text-gray-900 whitespace-nowrap">{fpo.entity_name}</p>
                 </td>
-                <td className="px-5 py-3 border-b border-gray-200">
-                  <p className="text-blue-600 font-semibold whitespace-no-wrap">{fpo.fpo_id}</p>
+ <td className="py-3 px-6 border-b border-gray-200 text-sm">
+ <p className="text-blue-600 font-semibold whitespace-nowrap">{fpo.fpo_id}</p>
                 </td>
-                <td className="px-5 py-3 border-b border-gray-200">
-                  <p className="whitespace-no-wrap">{fpo.state}</p>
+ <td className="py-3 px-6 border-b border-gray-200 text-sm">
+ <p className="whitespace-nowrap">{fpo.state}</p>
                 </td>
-                <td className="px-5 py-3 border-b border-gray-200">
-                  <p className="whitespace-no-wrap">{fpo.district}</p>
+ <td className="py-3 px-6 border-b border-gray-200 text-sm">
+ <p className="whitespace-nowrap">{fpo.district}</p>
                 </td>
-                <td className="px-5 py-3 border-b border-gray-200">
-                  <p className="whitespace-no-wrap">
+ <td className="py-3 px-6 border-b border-gray-200 text-sm">
+ <p className="whitespace-nowrap">
                     {fpo.contact_person_name} ({fpo.contact_person_phone})
                   </p>
                 </td>
-                <td className="px-5 py-3 border-b border-gray-200 text-center">
+ <td className="py-3 px-6 border-b border-gray-200 text-center text-sm">
                   <span className={`relative inline-block px-3 py-1 font-semibold text-sm rounded-full ${fpo.active ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'}`}>
                     <span className="absolute left-0 -ml-1 w-2 h-2 rounded-full bg-current"></span>
                     {fpo.active ? 'Yes' : 'No'}
