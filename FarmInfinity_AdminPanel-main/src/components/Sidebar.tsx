@@ -8,13 +8,7 @@ import { Link } from "react-router-dom";
 
 import keycloak from '../keycloak';
 const Sidebar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isSidebarHidden, setIsSidebarHidden] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsSidebarHidden(!isSidebarHidden);
-  };
-
+  const [isOpen, setIsOpen] = useState(false); 
   return (
     <>
       {/* Mobile Menu Toggle */}
@@ -26,37 +20,29 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`${
-          isOpen ? "block" : "hidden"
-        } ${
-          isSidebarHidden ? "w-20" : "w-64"
-        } lg:block bg-gray-900 text-amber-50 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300 ease-in-out`}
+        className={`${isOpen ? "block" : "hidden"
+        } w-64 lg:block bg-gray-900 text-amber-50 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300 ease-in-out`}
       > 
-        {/* Sidebar Toggle Button */}
-        <div className="absolute top-4 right-4 hidden lg:block">
-          <button onClick={toggleSidebar} className="text-xl text-amber-50 hover:text-amber-300">
-            <HiMenu />
-          </button>
-        </div>
 
         {/* Logout Button (Top Right) */}
-        {/* Position adjusted slightly to accommodate toggle button */}
-        <div className={`absolute top-4 ${isSidebarHidden ? 'left-4' : 'right-12'}`}>
+        <div className={`absolute top-4 right-4`}>
           <button onClick={() => keycloak.logout()} className="text-sm text-amber-50 hover:text-amber-300">
-            {!isSidebarHidden && "Logout"}
+            Logout
           </button>
         </div>
+        
         {/* Logo */}
-        <div className={`mb-6 ${isSidebarHidden ? 'mx-auto' : ''}`}>
+        <div className={`mb-6`}>
           <a href="/" className="block">
             <img src="/logo.png" alt="Logo" className="h-12 w-auto mx-auto" />
           </a>
         </div>
 
         {/* Dashboard */}
-        <div className="font-semibold flex items-center gap-2 py-3 px-2 hover:bg-gray-700 rounded cursor-pointer transition-colors duration-200">
+        <div className="font-semibold flex items-center gap-2 py-3 px-2 hover:bg-gray-700 rounded cursor-pointer">
           <RiDashboardLine />
-          {!isSidebarHidden && <Link to="/dashboard">Dashboard</Link>}
+          <Link to="/dashboard">Dashboard</Link>
+
         </div>
 
         {/* Users */}
@@ -67,11 +53,11 @@ const Sidebar = () => {
           <div className="space-y-2 pl-2">
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <FaUsers />
-              {!isSidebarHidden && <Link to="/staff">Staffs</Link>}
+              <Link to="/staff">Staffs</Link>
             </div>
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <FaUsers />
-              {!isSidebarHidden && <Link to="/farmers">Farmers</Link>}
+              <Link to="/farmers">Farmers</Link>
             </div>
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <ImUsers />
@@ -97,17 +83,14 @@ const Sidebar = () => {
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <TbUserSquareRounded />
               {!isSidebarHidden && <span>Borrower</span>}
+              <span>Borrower</span>
             </div>
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <TbCashBanknote />
-              {!isSidebarHidden && <span>Loan</span>}
+              <span>Loan</span>
             </div>
           </div>
         </div>
-      </div>
-      {/* This is a placeholder for the main content area. You will need to adjust your main content's layout to account for the sidebar's width. */}
-      <div className={`flex-1 transition-all duration-300 ease-in-out ${isSidebarHidden ? 'ml-20' : 'ml-64'}`}>
-        {/* Your main content goes here */}
       </div>
     </>
   );

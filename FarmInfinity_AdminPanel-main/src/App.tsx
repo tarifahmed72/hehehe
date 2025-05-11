@@ -15,7 +15,7 @@ function App() {
     <Router>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto ml-64"> {/* Added ml-64 for left margin */}
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
