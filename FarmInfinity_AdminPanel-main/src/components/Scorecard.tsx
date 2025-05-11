@@ -11,6 +11,12 @@ export default function ScoreCard({ farmerId, applicationId, financialYear}: pro
   useEffect(() => {
     async function fetchScoreCard() {
       try {
+        const token = localStorage.getItem("keycloak-token");
+
+        if (!token) {
+          return;
+        }
+
         const url = `https://baupmo41v5.execute-api.ap-south-1.amazonaws.com/dev/api/credit-report?farmerId=${farmerId}&applicationId=${applicationId}&financialYear=${financialYear}`;
 
         const response = await fetch(url);

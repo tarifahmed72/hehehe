@@ -20,13 +20,26 @@ const FarmerKyc: React.FC<FarmerKycProps> = ({ applicationId }) => {
   const [activeTab, setActiveTab] = useState<'primary' | 'secondary'>('primary');
 
   const fetchActivity = async (selectedYear: string) => {
+    
     if (!applicationId) return;
     try {
       setLoading(true);
       setErrorMsg('');
       setActivity(null);
 
-      const { data } = await axios.get(`https://dev-api.farmeasytechnologies.com/api/fetch-activity-data/?application_id=${applicationId}&financial_year=${selectedYear}`);
+      const token = localStorage.getItem("keycloak-token");
+
+        if (!token) {
+          setLoading(false);
+          return;
+        }
+
+      const { data } = await axios.get(`https://dev-api.farmeasytechnologies.com/api/fetch-activity-data/?application_id=${applicationId}&financial_year=${selectedYear}`,{
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
       
       if (!data || Object.keys(data).length === 0) {
         setErrorMsg('No activity data available for selected financial year.');

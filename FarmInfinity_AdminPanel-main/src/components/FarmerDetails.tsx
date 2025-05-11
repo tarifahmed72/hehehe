@@ -131,15 +131,33 @@ const FarmerDetails: React.FC = () => {
       setError(null);
 
       try {
+        const token = localStorage.getItem("keycloak-token");
+
+        if (!token) {
+          setError("No auth token found. Please login again.");
+          setLoading(false);
+          return;
+        }
         // Fetch Bio (Assuming no token required)
         const bioHistoryResponse = await axios.get(
-          `https://dev-api.farmeasytechnologies.com/api/bio-histories/${applicationId}?skip=0&limit=10`
+          `https://dev-api.farmeasytechnologies.com/api/bio-histories/${applicationId}?skip=0&limit=10`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (bioHistoryResponse.data && bioHistoryResponse.data.length > 0) {
           const bio_version_id = bioHistoryResponse.data[0].bio_version_id;
           const bioResponse = await axios.get<Bio>(
-            `https://dev-api.farmeasytechnologies.com/api/bio/${bio_version_id}`
+            `https://dev-api.farmeasytechnologies.com/api/bio/${bio_version_id}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
           setBio(bioResponse.data);
         } else {
@@ -149,7 +167,12 @@ const FarmerDetails: React.FC = () => {
 
         // Fetch KYC
         const kycResponse = await axios.get(
-          `https://dev-api.farmeasytechnologies.com/api/kyc-histories/${farmerId}`
+          `https://dev-api.farmeasytechnologies.com/api/kyc-histories/${farmerId}`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         console.log("KYC Response:", kycResponse.data);
 
@@ -163,7 +186,12 @@ const FarmerDetails: React.FC = () => {
         // Fetch POI
         if (poi_id) {
           const poiResponse = await axios.get<POIData>(
-            `https://dev-api.farmeasytechnologies.com/api/poi/${poi_id}`
+            `https://dev-api.farmeasytechnologies.com/api/poi/${poi_id}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
           console.log("POI Response:", poiResponse.data);
           setPoi(poiResponse.data);
@@ -174,7 +202,12 @@ const FarmerDetails: React.FC = () => {
         // Fetch POA
         if (poa_id) {
           const poaResponse = await axios.get<POAData>(
-            `https://dev-api.farmeasytechnologies.com/api/poa/${poa_id}`
+            `https://dev-api.farmeasytechnologies.com/api/poa/${poa_id}`,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
           console.log("POA Response:", poaResponse.data);
           setPoa(poaResponse.data);
