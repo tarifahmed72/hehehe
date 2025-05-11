@@ -21,7 +21,8 @@ export default function ScoreCard({ farmerId, applicationId, financialYear}: pro
 
         const response = await fetch(url, {
                             headers: {
-                            'Authorization': `Bearer ${token}`
+                            'Authorization': `Bearer ${token}`,
+                            "Content-Type": "application/json",
                             }
                             });
         const text = await response.text();
