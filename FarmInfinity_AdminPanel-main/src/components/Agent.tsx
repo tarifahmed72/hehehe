@@ -1,5 +1,6 @@
-import  { useState, useEffect } from 'react';
-import axios, { AxiosResponse } from 'axios';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
+import { AxiosResponse } from 'axios';
 import KeycloakService from '../keycloak';
 
 interface AgentData {
@@ -31,9 +32,9 @@ const Agent= () => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {    
-    const fetchAgents = async () => {
-      if (KeycloakService.isLoggedIn()) {
-        const token = KeycloakService.getToken();
+    const fetchAgents = async () => {      
+      if ((KeycloakService as any).isLoggedIn) {
+        const token = (KeycloakService as any).token;
         try {
           setLoading(true);
           const response: AxiosResponse<AgentData[]> = await axios.get(
