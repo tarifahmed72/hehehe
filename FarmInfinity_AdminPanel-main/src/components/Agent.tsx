@@ -1,5 +1,6 @@
 import  { useState, useEffect } from 'react';
 import axios, { AxiosResponse } from 'axios';
+import KeycloakService from '../keycloak';
 
 interface AgentData {
   id: string;
@@ -29,22 +30,29 @@ const Agent= () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    const fetchAgentsData = async () => {
-      try {
-        setLoading(true);
-        const response: AxiosResponse<AgentData[]> = await axios.get(
-          `https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10`
-        );
-        setAgents(response.data);
-      } catch (err: any) {
-        setError(`Error fetching agent data: ${err.message}`);
-      } finally {
-        setLoading(false);
+  useEffect(() => {    
+    const fetchAgents = async () => {
+      if (KeycloakService.isLoggedIn()) {
+        const token = KeycloakService.getToken();
+        try {
+          setLoading(true);
+          const response: AxiosResponse<AgentData[]> = await axios.get(
+            'https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10',
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setAgents(response.data);
+        } catch (err: any) {
+          setError(`Error fetching agents: ${err.message}`);
+        } finally {
+          setLoading(false);
+        }
       }
     };
-
-    fetchAgentsData();
+    fetchAgents();
   }, []);
 
   if (loading) {
