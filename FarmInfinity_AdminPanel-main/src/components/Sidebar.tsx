@@ -47,9 +47,7 @@ const Sidebar = () => {
 
         {/* Users */}
         <div>
-          {!isSidebarHidden && (
-            <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Users</div>
-          )}
+          <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Users</div>
           <div className="space-y-2 pl-2">
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <FaUsers />
@@ -76,13 +74,10 @@ const Sidebar = () => {
 
         {/* Loan Management */}
         <div>
-          {!isSidebarHidden && (
-            <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Loan Management</div>
-          )}
+          <div className="text-sm text-gray-400 uppercase font-bold mt-6 mb-2 px-2">Loan Management</div>
           <div className="space-y-2 pl-2">
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
               <TbUserSquareRounded />
-              {!isSidebarHidden && <span>Borrower</span>}
               <span>Borrower</span>
             </div>
             <div className="flex items-center gap-2 px-2 py-2 hover:bg-gray-700 rounded transition-colors duration-200">
