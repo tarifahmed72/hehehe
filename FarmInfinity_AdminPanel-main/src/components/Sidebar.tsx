@@ -6,6 +6,7 @@ import { TbUserSquareRounded, TbCashBanknote } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
+import keycloak from '../keycloak';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -23,7 +24,13 @@ const Sidebar = () => {
         className={`${
           isOpen ? "block" : "hidden"
         } lg:block bg-gray-900 text-amber-50 w-64 p-4 h-screen space-y-4 fixed lg:static z-50 overflow-y-auto transition-all duration-300`}
-      >
+      > 
+        {/* Logout Button (Top Right) */}
+        <div className="absolute top-4 right-4">
+          <button onClick={() => keycloak.logout()} className="text-sm text-amber-50 hover:text-amber-300">
+            Logout
+          </button>
+        </div>
         {/* Logo */}
         <div className="mb-6">
           <a href="/" className="block">
