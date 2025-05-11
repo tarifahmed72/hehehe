@@ -80,9 +80,14 @@ const Farmers = () => {
       }
 
       try {
-        const response = await axios.get("https://dev-api.farmeasytechnologies.com/api/farmers/", {
+        const response = await axios.get("https://dev-api.farmeasytechnologies.com/api/farmers/",
+ {
           headers: {
             Authorization: `Bearer ${token}`,
+          },
+          params: {
+ limit: 10, // Limit the number of results
+            skip: (currentPage - 1) * farmersPerPage, // Skip based on current page
           },
         });
 
