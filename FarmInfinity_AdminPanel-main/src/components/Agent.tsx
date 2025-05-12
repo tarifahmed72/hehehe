@@ -27,33 +27,62 @@ interface AgentData {
 }
 
 const Agent= () => {
-  const [agents, setAgents] = useState<AgentData[]>([]);
+  const [agent, setAgent] = useState<AgentData | null>(null); // For single agent details
+  const [allAgents, setAllAgents] = useState<AgentData[]>([]); // For list of all agents
   const [loading, setLoading] = useState(true);
+  const agentId = "your_agent_id_here"; // Replace with how you get the agent ID (e.g., from URL params or props)
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {    
-    const fetchAgents = async () => {      
-      if ((KeycloakService as any).isLoggedIn) {
+  // Function to fetch a single agent by ID
+  const fetchAgentById = async (id: string) => {
+    setLoading(true);
+    if ((KeycloakService as any).isLoggedIn) {
         const token = (KeycloakService as any).token;
         try {
-          setLoading(true);
-          const response: AxiosResponse<AgentData[]> = await axios.get(
-            'https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10',
+          const response: AxiosResponse<AgentData> = await axios.get(
+            `https://dev-api.farmeasytechnologies.com/api/field_agent/${agentId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
-            }
+            }            
           );
-          setAgents(response.data);
+          setAgent(response.data);
         } catch (err: any) {
           setError(`Error fetching agents: ${err.message}`);
         } finally {
           setLoading(false);
         }
       }
-    };
-    fetchAgents();
+  };
+
+  // Function to fetch all agents
+  const fetchAllAgents = async () => {
+    setLoading(true);
+    if ((KeycloakService as any).isLoggedIn) {
+        const token = (KeycloakService as any).token;
+        try {
+          const response: AxiosResponse<AgentData[]> = await axios.get(
+            'https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10', // Adjust skip and limit as needed
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setAllAgents(response.data);
+        } catch (err: any) {
+          setError(`Error fetching all agents: ${err.message}`);
+        } finally {
+          setLoading(false);
+        }
+      }
+  };
+
+  useEffect(() => {
+    // Decide whether to fetch a single agent or all agents based on your logic
+    // For now, let's fetch all agents when the component mounts
+    fetchAllAgents();
   }, []);
 
   if (loading) {
@@ -65,12 +94,12 @@ const Agent= () => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Agent Details</h1>
-      {agents.length === 0 ? (
+      <h1 className="text-2xl font-bold mb-4">Agent Details (All Agents)</h1>
+      {allAgents.length === 0 ? (
         <div className="text-gray-500">No agents to display.</div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {agents.map((agent) => (
+          {allAgents.map((agent) => (
             <div key={agent.id} className="bg-white rounded-lg shadow-md p-4 space-y-2">
               <div><strong>Agent ID:</strong> {agent.agent_id}</div>
               <div><strong>First Name:</strong> {agent.first_name}</div>
@@ -94,6 +123,8 @@ const Agent= () => {
             </div>
           ))}
         </div>
+      ) : (
+        <div className="text-gray-500">No agent data available.</div>
       )}
     </div>
   );
