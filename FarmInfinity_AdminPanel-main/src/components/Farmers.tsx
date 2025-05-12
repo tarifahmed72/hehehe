@@ -16,9 +16,7 @@ const Farmers = () => {
   const navigate = useNavigate();
 
  
-
-  const [farmers, setFarmers] = useState(hardcodedFarmergit push
-);
+  const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -48,20 +46,13 @@ const Farmers = () => {
         });
 
         // Adjust the data mapping to match the API response structure
-        const fetchedFarmers = response.data.data.map((farmer: ApiFarmer) => ({
-          id: farmer.id,
-          name: farmer.name || "N/A", // Handle cases where name is null
-          gender: "N/A", // Gender is not present in the API response
-          phone: farmer.phone_no,
-          city: farmer.village || "N/A", // Assuming 'village' maps to city
-          createdOn: new Date(farmer.created_at).toLocaleDateString(), // Format the date
-          status: getStatusText(farmer.status), // Function to convert status code to text
-          approval: "N/A", // Approval is not present in the API response
-          amount: "N/A", // Amount is not present in the API response
-          // You might need to fetch additional details for gender, approval, and amount
+        const fetchedFarmers = response.data.data.map((farmer: ApiFarmer) => ({...farmer,
+          name: farmer.name || "N/A",
+          phone: farmer.phone_no || "N/A",
+          village: farmer.village || "N/A",
         }));
 
-        setFarmers([...hardcodedFarmers, ...fetchedFarmers]);
+ setFarmers(fetchedFarmers);
       } catch (err) {
         console.error("Error fetching farmers:", err);
         setError("Failed to fetch farmer data. Check token or permissions.");
@@ -73,7 +64,7 @@ const Farmers = () => {
     fetchFarmers();
   }, []);
 
-  const getStatusText = (status: Number|null) => {
+  const getStatusText = (status: number | null) => {
     switch (status) {
       case 1:
         return "Lead";
@@ -88,8 +79,8 @@ const Farmers = () => {
   // Filtered farmers based on search query
   const filteredFarmers = farmers.filter(
     (farmer) =>
-      (farmer.name && farmer.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      farmer.phone.includes(searchQuery)
+      (farmer.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      farmer.phone_no.includes(searchQuery)
   );
 
   // Pagination logic
@@ -103,7 +94,7 @@ const Farmers = () => {
     setCurrentPage(1); // Reset to first page on search
   };
 
-  return (
+ return (
     <div className="p-6">
       <h1 className="text-2xl font-bold mb-6 text-gray-800">👨‍🌾 Farmer List</h1>
 
@@ -154,13 +145,13 @@ const Farmers = () => {
                     className="hover:bg-blue-50 cursor-pointer border-b"
                   >
                     <td className="px-4 py-3 font-medium text-gray-900">{farmer.name}</td>
-                    <td className="px-4 py-3">{farmer.gender}</td>
-                    <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone}</td>
-                    <td className="px-4 py-3">{farmer.city || "—"}</td>
-                    <td className="px-4 py-3">{farmer.createdOn}</td>
-                    <td className="px-4 py-3 text-yellow-600">{farmer.status}</td>
-                    <td className="px-4 py-3">{farmer.approval}</td>
-                    <td className="px-4 py-3">{farmer.amount || "—"}</td>
+                    <td className="px-4 py-3">{"N/A"}</td> {/* Assuming gender is not available in this API */}
+                    <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone_no}</td>
+                    <td className="px-4 py-3">{farmer.village || "—"}</td>
+                    <td className="px-4 py-3">{new Date(farmer.created_at).toLocaleDateString()}</td>
+                    <td className="px-4 py-3 text-yellow-600">{getStatusText(farmer.status)}</td>
+                    <td className="px-4 py-3">{"N/A"}</td>
+                    <td className="px-4 py-3">{"N/A"}</td>
                     <td className="px-4 py-3 text-center text-xl text-gray-500">⋮</td>
                   </tr>
                 ))}

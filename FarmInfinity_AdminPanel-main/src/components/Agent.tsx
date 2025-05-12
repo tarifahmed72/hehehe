@@ -27,40 +27,12 @@ interface AgentData {
 }
 
 const Agent= () => {
-  const [agent, setAgent] = useState<AgentData | null>(null); // For single agent details
   const [allAgents, setAllAgents] = useState<AgentData[]>([]); // For list of all agents
   const [loading, setLoading] = useState(true);
-  const agentId = "your_agent_id_here"; // Replace with how you get the agent ID (e.g., from URL params or props)
   const [error, setError] = useState<string | null>(null);
-
-  // Function to fetch a single agent by ID
-  const fetchAgentById = async (id: string) => {
+  const fetchAllAgents = async () => {    
     setLoading(true);
-    if ((KeycloakService as any).isLoggedIn) {
-        const token = (KeycloakService as any).token;
-        try {
-          const response: AxiosResponse<AgentData> = await axios.get(
-            `https://dev-api.farmeasytechnologies.com/api/field_agent/${agentId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            }            
-          );
-          setAgent(response.data);
-        } catch (err: any) {
-          setError(`Error fetching agents: ${err.message}`);
-        } finally {
-          setLoading(false);
-        }
-      }
-  };
-
-  // Function to fetch all agents
-  const fetchAllAgents = async () => {
-    setLoading(true);
-    if ((KeycloakService as any).isLoggedIn) {
-        const token = (KeycloakService as any).token;
+    if ((KeycloakService as any).isLoggedIn) {        const token = (KeycloakService as any).token;
         try {
           const response: AxiosResponse<AgentData[]> = await axios.get(
             'https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10', // Adjust skip and limit as needed
@@ -123,8 +95,6 @@ const Agent= () => {
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-gray-500">No agent data available.</div>
       )}
     </div>
   );

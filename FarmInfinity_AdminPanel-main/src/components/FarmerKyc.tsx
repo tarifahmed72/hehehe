@@ -198,10 +198,7 @@ const FarmerKyc: React.FC<FarmerKycProps> = ({ applicationId }) => {
       <p><strong>No. of Cylinders:</strong> {data.no_of_cylinders}</p>
       <p><strong>Shed Capacity:</strong> {data.shed_capacity || 'N/A'}</p>
       <p><strong>Insurance:</strong> {data.insurance || 'N/A'}</p>
-      <p><strong>breed capacity:</strong> {data.breed 'N/A'}</p>git push origin main
-
-
-
+      <p><strong>Breed:</strong> {data.breed || 'N/A'}</p>
       <p><strong>Facility Dimension:</strong> {data.shed_facility_dimension || 'N/A'}</p>
       {data.facilities?.length > 0 && <p><strong>Facilities:</strong> {data.facilities.map((f: any) => f.facility_name).join(', ')}</p>}
 
