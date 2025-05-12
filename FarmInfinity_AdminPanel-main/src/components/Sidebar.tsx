@@ -26,7 +26,7 @@ const Sidebar = () => {
 
         {/* Logout Button (Top Right) */}
         <div className={`absolute top-4 right-4`}>
-          <button onClick={() => keycloak.logout()} className="text-sm text-amber-50 hover:text-amber-300">
+          <button onClick={() => keycloak.logout()} className="text-sm text-black hover:text-gray-700">
             Logout
           </button>
         </div>
