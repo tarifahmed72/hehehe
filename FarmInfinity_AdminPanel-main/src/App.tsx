@@ -72,7 +72,7 @@ function App() {
             element={<PrivateRoute element={<BankAgent />} />} // Removed allowedRoles
           />
           <Route
-            path="/farmers_details/farmerId/:farmerId/applicationId/:applicationId"
+            path="/farmers_details/farmerId/:farmerId/applicationId/:applicationId" // Changed route path
             element={<PrivateRoute element={<FarmerDetails />} />} // Changed route path
           />
           <Route
