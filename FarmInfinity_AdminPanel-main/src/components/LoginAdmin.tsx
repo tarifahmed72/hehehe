@@ -15,14 +15,10 @@ const LoginAdmin = () => {
 
     try {
       const response = await axios.post(
-        'https://dev-api.farmeasytechnologies.com/api/login',
-        `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, // Send as URL-encoded form data
-        {
-          headers: {
-            'Content-Type': 'application/x-www-form-urlencoded', // Set the content type
-          },
-        });
-
+              'https://dev-api.farmeasytechnologies.com/api/login',
+              { username, password } // Send as JSON
+            );
+            
       // Assuming the token is in response.data.access_token
       const token = response.data.access_token;
       if (token) {
