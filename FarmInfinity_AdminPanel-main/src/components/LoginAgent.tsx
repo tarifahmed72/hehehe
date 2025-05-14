@@ -6,7 +6,6 @@ const LoginAgent = () => {
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
-  const [error, setError] = useState("");
 
   const handleSendOtp = async () => {
     try {
@@ -16,7 +15,6 @@ const LoginAgent = () => {
     setOtpSent(true);
     } catch (err) {
       console.error("Error sending OTP:", err);
-      setError("Failed to send OTP. Please try again.");
     }
  };
 
@@ -39,11 +37,9 @@ const LoginAgent = () => {
         navigate("/dashboard"); // Redirect to dashboard on successful login
       } else {
         console.error("Exchange code failed: No new token received.");
-        setError("Login failed. Could not get a valid token.");
       }
     } catch (err) {
       console.error("Error verifying OTP or exchanging code:", err);
-      setError("Login failed. Please check your OTP or try again.");
     }
   };
  const navigate = useNavigate();
