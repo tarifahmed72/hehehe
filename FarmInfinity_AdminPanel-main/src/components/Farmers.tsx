@@ -41,6 +41,7 @@ const Farmers = () => {
           },
           params: {
             limit: farmersPerPage, // Use farmersPerPage for the limit
+            skip: (currentPage - 1) * farmersPerPage, // Calculate skip based on current page and items per page
           },
         });
 
