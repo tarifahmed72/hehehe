@@ -14,14 +14,12 @@ interface ApiFarmer {
 }
 const Farmers = () => {
   const navigate = useNavigate();
-
- 
   const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
+
   const [searchQuery, setSearchQuery] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const farmersPerPage = 5;
 
   useEffect(() => {
     const fetchFarmers = async () => {
@@ -39,10 +37,6 @@ const Farmers = () => {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: {
-            limit: farmersPerPage, // Use farmersPerPage for the limit
-            skip: (currentPage - 1) * farmersPerPage, // Calculate skip based on current page and items per page
-          },
         });
 
         // Adjust the data mapping to match the API response structure
@@ -52,18 +46,17 @@ const Farmers = () => {
           village: farmer.village || "N/A",
         }));
 
- setFarmers(fetchedFarmers);
+        setFarmers(fetchedFarmers);
+
       } catch (err) {
         console.error("Error fetching farmers:", err);
         setError("Failed to fetch farmer data. Check token or permissions.");
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchFarmers();
-  }, [currentPage, farmersPerPage]); // Add currentPage and farmersPerPage as dependencies
-
+    }; 
+    fetchFarmers();  // This useEffect dependency array is missing
+  }, []); // Empty dependency array to run once on mount
   const getStatusText = (status: number | null) => {
     switch (status) {
       case 1:
@@ -76,30 +69,20 @@ const Farmers = () => {
     }
   };
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(event.target.value);
+  };
+
   // Filtered farmers based on search query
   const filteredFarmers = farmers.filter(
     (farmer) =>
       (farmer.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
       farmer.phone_no.includes(searchQuery)
   );
-
-  // Pagination logic
-  const indexOfLastFarmer = currentPage * farmersPerPage;
-  const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
-  const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
-  const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage);
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    setCurrentPage(1); // Reset to first page on search
-  };
-
  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-6 text-gray-800">👨‍🌾 Farmer List</h1>
-
-      {/* Filter section */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+    <div className="p-6 bg-gray-100 min-h-screen">
+      <h1 className="text-3xl font-bold text-gray-800 mb-6">Farmers</h1>
+      <div className="flex flex-col md:flex-row items-center justify-between mb-6 space-y-4 md:space-y-0">
         <input
           placeholder="🔍 Search farmers"
           value={searchQuery}
@@ -138,10 +121,11 @@ const Farmers = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentFarmers.map((farmer) => (
+                {/* Render all filtered farmers */}
+                {filteredFarmers.map((farmer: ApiFarmer) => (
                   <tr
-                    key={farmer.id}
-                    onClick={() => navigate(`/farmers_applications/${farmer.id}`)}
+                    key={farmer.phone_no}
+                    onClick={() => navigate(`/farmer_details/${farmer.id}`)}
                     className="hover:bg-blue-50 cursor-pointer border-b"
                   >
                     <td className="px-4 py-3 font-medium text-gray-900">{farmer.name}</td>
@@ -159,26 +143,6 @@ const Farmers = () => {
             </table>
           </div>
 
-          {/* Pagination Controls */}
-          <div className="mt-4 flex justify-center gap-2">
-            <button
-              disabled={currentPage === 1}
-              onClick={() => setCurrentPage((prev) => prev - 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              ⬅ Prev
-            </button>
-            <span className="px-3 py-1">
-              Page {currentPage} of {totalPages}
-            </span>
-            <button
-              disabled={currentPage === totalPages}
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              className="px-3 py-1 border rounded disabled:opacity-50"
-            >
-              Next ➡
-            </button>
-          </div>
         </>
       )}
     </div>

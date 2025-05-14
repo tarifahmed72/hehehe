@@ -15,7 +15,7 @@ function App() {
     <Router>
       <div className="flex h-screen">
         <Sidebar />
-        <div className="flex-1 overflow-auto ml-48"> {/* Adjusted ml to ml-48 for left margin */}
+        <div className="flex-1 overflow-auto"> {/* Adjusted ml to ml-48 for left margin */}
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
