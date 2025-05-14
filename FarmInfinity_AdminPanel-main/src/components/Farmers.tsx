@@ -41,7 +41,7 @@ const Farmers = () => {
           },
           params: {
  limit: 10, // Limit the number of results
-            skip: (currentPage - 1) * farmersPerPage, // Skip based on current page
+            limit: farmersPerPage, // Use farmersPerPage for the limit
           },
         });
 
@@ -62,7 +62,7 @@ const Farmers = () => {
     };
 
     fetchFarmers();
-  }, []);
+  }, [currentPage, farmersPerPage]); // Add currentPage and farmersPerPage as dependencies
 
   const getStatusText = (status: number | null) => {
     switch (status) {
