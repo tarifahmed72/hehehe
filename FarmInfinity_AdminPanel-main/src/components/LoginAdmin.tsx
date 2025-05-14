@@ -14,10 +14,14 @@ const LoginAdmin = () => {
     setError(''); // Clear previous errors
 
     try {
-      const response = await axios.post('https://dev-api.farmeasytechnologies.com/api/login', {
-        username,
-        password,
-      });
+      const response = await axios.post(
+        'https://dev-api.farmeasytechnologies.com/api/login',
+        `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`, // Send as URL-encoded form data
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded', // Set the content type
+          },
+        });
 
       // Assuming the token is in response.data.access_token
       const token = response.data.access_token;
