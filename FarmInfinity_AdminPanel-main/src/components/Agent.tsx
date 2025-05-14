@@ -35,8 +35,8 @@ const Agent= () => {
     if ((KeycloakService as any).isLoggedIn) {        const token = (KeycloakService as any).token;
         try {
           const response: AxiosResponse<AgentData[]> = await axios.get(
-            'https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=10', // Adjust skip and limit as needed
-            {
+            'https://dev-api.farmeasytechnologies.com/api/field_agents/',
+ {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -52,10 +52,12 @@ const Agent= () => {
   };
 
   useEffect(() => {
-    // Decide whether to fetch a single agent or all agents based on your logic
-    // For now, let's fetch all agents when the component mounts
-    fetchAllAgents();
-  }, []);
+    const checkLoginAndFetch = async () => {
+      if (await (KeycloakService as any).isLoggedIn) {
+        fetchAllAgents();
+      }
+    };
+    checkLoginAndFetch();  }, []);
 
   if (loading) {
     return <div className="p-4">Loading agents...</div>;
