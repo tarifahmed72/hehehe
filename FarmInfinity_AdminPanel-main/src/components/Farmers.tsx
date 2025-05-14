@@ -75,13 +75,6 @@ const Farmers = () => {
     setSearchQuery(event.target.value);
   };
 
-  // Filtered farmers based on search query
-  const filteredFarmers = farmers.filter(
-    (farmer) =>
-      (farmer.name?.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      farmer.phone_no.includes(searchQuery)
-  );
-
   const totalPages = Math.ceil(farmers.length / farmersPerPage); // Calculate total pages based on the total number of farmers
 
 
@@ -131,8 +124,7 @@ const Farmers = () => {
                 </tr>
               </thead>
               <tbody>
-                {/* Render all filtered farmers */}
-                {farmers.map((farmer: ApiFarmer) => (
+                {farmers.map((farmer) => (
                   <tr 
                     key={farmer.phone_no}
                     onClick={() => navigate(`/farmer_details/${farmer.id}`)}
