@@ -14,10 +14,17 @@ const LoginAdmin = () => {
     setError(''); // Clear previous errors
 
     try {
+      const params = new URLSearchParams();
+      params.append('username', username);
+      params.append('password', password);
+
       const response = await axios.post(
-              'https://dev-api.farmeasytechnologies.com/api/login',
-              { username, password } // Send as JSON
-            );
+        'https://dev-api.farmeasytechnologies.com/api/login',
+        params.toString(),
+        {
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+        }
+      );
             
       // Assuming the token is in response.data.access_token
       const token = response.data.access_token;
@@ -25,10 +32,11 @@ const LoginAdmin = () => {
         localStorage.setItem('farm-infinity-admin-token', token);
         navigate('/dashboard'); // Redirect to dashboard on successful login
  // Decode the token to get user information, including the role
- const decodedToken: any = jwtDecode(token);
- const userRole = decodedToken.role; // Assuming 'role' is the claim name for the role
+        const decodedToken: any = jwtDecode(token);
+        const userRole = decodedToken.role; // Assuming 'role' is the claim name for the role
  // Store the role in local storage
- localStorage.setItem('user-role', userRole);      } else {
+        localStorage.setItem('user-role', userRole);
+      } else {
         setError('Login failed: No token received.');
       }
 
