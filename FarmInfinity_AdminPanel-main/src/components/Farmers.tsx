@@ -26,7 +26,7 @@ const Farmers = () => {
 
   useEffect(() => {
     const fetchFarmers = async () => {
-      const token = localStorage.getItem("keycloak-token");
+      const token = localStorage.getItem("farm-infinity-admin-token");
 
       if (!token) {
         setError("No auth token found. Please login again.");
@@ -58,7 +58,7 @@ const Farmers = () => {
       } 
     }; 
     fetchFarmers();  // This useEffect dependency array is missing
-  }, []); // Empty dependency array to run once on mount
+  }, [currentPage]); // Empty dependency array to run once on mount
   const getStatusText = (status: number | null) => {
     switch (status) {
       case 1:
