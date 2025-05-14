@@ -14,12 +14,14 @@ import FarmerApplication from "./components/FarmerApplication";
 import HomePage from "./components/HomePage";
 
 
-const PrivateRoute = ({ element, allowedRoles }: any) => { // Added allowedRoles prop
+const PrivateRoute = ({ element }: any) => { // Removed allowedRoles prop
   const isAuthenticated = localStorage.getItem("farm-infinity-admin-token"); // Check for token in local storage
-  const userRole = localStorage.getItem("user-role"); // Get user role from local storage
 
+  console.log("PrivateRoute rendered");
+  console.log("isAuthenticated:", !!isAuthenticated);
+  console.log("Token in local storage:", isAuthenticated);
   // Check if the user is authenticated and if their role is allowed
-  if (isAuthenticated && userRole && allowedRoles.includes(userRole)) {
+  if (isAuthenticated) {
     return element;
   } else {
     // Redirect to home or an unauthorized page if not authenticated or role is not allowed
@@ -47,40 +49,39 @@ function App() {
           <Route path="/login-agent" element={<LoginAgent />} />
           <Route
             path="/dashboard"
-            element={<PrivateRoute element={<Dashboard />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<Dashboard />} />} // Removed allowedRoles
           />
           <Route
             path="/fpo"
-            element={<PrivateRoute element={<FPO />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<FPO />} />} // Removed allowedRoles
           />
           <Route
             path="/staff"
-            element={<PrivateRoute element={<Staff />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<Staff />} />} // Removed allowedRoles
           />
           <Route
             path="/farmers"
-            element={<PrivateRoute element={<Farmers />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<Farmers />} />} // Removed allowedRoles
           />
           <Route
             path="/agent"
-            element={<PrivateRoute element={<Agent />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<Agent />} />} // Removed allowedRoles
           />
           <Route
             path="/bank-agent"
-            element={<PrivateRoute element={<BankAgent />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<BankAgent />} />} // Removed allowedRoles
           />
           <Route
             path="/farmers_details/farmerId/:farmerId/applicationId/:applicationId"
-            element={<PrivateRoute element={<FarmerDetails />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<FarmerDetails />} />} // Removed allowedRoles
           />
           <Route
             path="/farmers_applications/:id"
-            element={<PrivateRoute element={<FarmerApplication />} allowedRoles={['agent', 'manager', 'fpo']} />} // Added allowedRoles
+            element={<PrivateRoute element={<FarmerApplication />} />} // Removed allowedRoles
           />
         </Routes>
       </div>
     </div>
   );
 }
-
 export default App;
