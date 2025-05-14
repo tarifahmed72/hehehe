@@ -13,9 +13,9 @@ interface ApiFarmer {
   updated_at: string;
 }
 const Farmers = () => {
- const navigate = useNavigate();
+  const navigate = useNavigate();
 
-
+  const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -46,7 +46,7 @@ const Farmers = () => {
           village: farmer.village || "N/A",
         }));
 
- setFarmers(fetchedFarmers);
+        setFarmers(fetchedFarmers);
       } catch (err) {
         console.error("Error fetching farmers:", err);
         setError("Failed to fetch farmer data. Check token or permissions.");
@@ -72,7 +72,6 @@ const Farmers = () => {
     setSearchQuery(event.target.value);
   };
 
- const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
   // Filtered farmers based on search query
   const filteredFarmers = farmers.filter(
     (farmer) =>
@@ -80,15 +79,15 @@ const Farmers = () => {
       farmer.phone_no.includes(searchQuery)
   );
 
+  const [currentPage, setCurrentPage] = useState(1);
   const farmersPerPage = 20; // Set to 20 farmers per page
   const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage); // Calculate total pages based on filtered farmers
-
 
   // Calculate the farmers to display on the current page
   const indexOfLastFarmer = currentPage * farmersPerPage;
   const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
   const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
- const [currentPage, setCurrentPage] = useState(1);
+
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
