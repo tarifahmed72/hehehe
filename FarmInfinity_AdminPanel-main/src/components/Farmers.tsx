@@ -16,6 +16,9 @@ const Farmers = () => {
   const navigate = useNavigate();
 
   const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const farmersPerPage = 20; // Set to 20 farmers per page
   const [searchQuery, setSearchQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
@@ -32,7 +35,7 @@ const Farmers = () => {
       }
 
       try {
-        const response = await axios.get("https://dev-api.farmeasytechnologies.com/api/farmers/",
+        const response = await axios.get(`https://dev-api.farmeasytechnologies.com/api/farmers/?page=${currentPage}&limit=${farmersPerPage}`,
  {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -79,14 +82,7 @@ const Farmers = () => {
       farmer.phone_no.includes(searchQuery)
   );
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const farmersPerPage = 20; // Set to 20 farmers per page
-  const totalPages = Math.ceil(filteredFarmers.length / farmersPerPage); // Calculate total pages based on filtered farmers
-
-  // Calculate the farmers to display on the current page
-  const indexOfLastFarmer = currentPage * farmersPerPage;
-  const indexOfFirstFarmer = indexOfLastFarmer - farmersPerPage;
-  const currentFarmers = filteredFarmers.slice(indexOfFirstFarmer, indexOfLastFarmer);
+  const totalPages = Math.ceil(farmers.length / farmersPerPage); // Calculate total pages based on the total number of farmers
 
 
   const handlePageChange = (pageNumber: number) => {
@@ -136,7 +132,7 @@ const Farmers = () => {
               </thead>
               <tbody>
                 {/* Render all filtered farmers */}
-                {currentFarmers.map((farmer: ApiFarmer) => (
+                {farmers.map((farmer: ApiFarmer) => (
                   <tr 
                     key={farmer.phone_no}
                     onClick={() => navigate(`/farmer_details/${farmer.id}`)}
