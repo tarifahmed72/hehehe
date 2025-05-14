@@ -7,7 +7,9 @@ import Farmers from "./components/Farmers";
 import Agent from "./components/Agent";
 import BankAgent from "./components/BankAgent";
 import FarmerDetails from "./components/FarmerDetails";
+import LoginAgent from "./components/LoginAgent";
 import FPO from "./components/FPO";
+import LoginAdmin from "./components/LoginAdmin";
 import FarmerApplication from "./components/FarmerApplication";
 
 function App() {
@@ -17,6 +19,8 @@ function App() {
         <Sidebar />
         <div className="flex-1 overflow-auto"> {/* Adjusted ml to ml-48 for left margin */}
           <Routes>
+ <Route path="/login" element={<LoginAdmin />} />
+ <Route path="/login-otp" element={<LoginAgent />} />
             <Route path="/" element={<Dashboard />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/fpo" element={<FPO />} />
