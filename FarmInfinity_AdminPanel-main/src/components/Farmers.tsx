@@ -18,7 +18,7 @@ const Farmers = () => {
   const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const farmersPerPage = 20; // Set to 20 farmers per page
+  const farmersPerPage = 100; // Set to 20 farmers per page
   const [searchQuery, setSearchQuery] = useState("");
 
   const [loading, setLoading] = useState(true);
