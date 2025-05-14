@@ -40,7 +40,6 @@ const Farmers = () => {
             Authorization: `Bearer ${token}`,
           },
           params: {
- limit: 10, // Limit the number of results
             limit: farmersPerPage, // Use farmersPerPage for the limit
           },
         });
