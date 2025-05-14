@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+import { jwtDecode } from 'jwt-decode';
 const LoginAdmin = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -23,7 +24,11 @@ const LoginAdmin = () => {
       if (token) {
         localStorage.setItem('farm-infinity-admin-token', token);
         navigate('/dashboard'); // Redirect to dashboard on successful login
-      } else {
+ // Decode the token to get user information, including the role
+ const decodedToken: any = jwtDecode(token);
+ const userRole = decodedToken.role; // Assuming 'role' is the claim name for the role
+ // Store the role in local storage
+ localStorage.setItem('user-role', userRole);      } else {
         setError('Login failed: No token received.');
       }
 
