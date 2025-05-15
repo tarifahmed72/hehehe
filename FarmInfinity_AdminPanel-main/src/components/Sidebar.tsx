@@ -4,11 +4,13 @@ import { RiBankFill, RiDashboardLine } from "react-icons/ri";
 import { ImUsers } from "react-icons/im";
 import { TbUserSquareRounded, TbCashBanknote } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import keycloak from '../keycloak';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); 
+  const navigate = useNavigate();
+
   return (
     <>
       {/* Mobile Menu Toggle */}
@@ -26,7 +28,7 @@ const Sidebar = () => {
 
         {/* Logout Button (Top Right) */}
         <div className={`absolute top-4 right-4`}>
-          <button onClick={() => keycloak.logout()} className="text-sm text-black hover:text-gray-700">
+          <button onClick={() => keycloak.logout({ redirectUri: window.location.origin })} className="text-sm text-black hover:text-gray-700">
             Logout
           </button>
         </div>
