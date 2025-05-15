@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const LoginAgent = () => {
+const LoginAgent = () => { 
   const [phone, setPhone] = useState("");
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState("");
@@ -119,10 +119,6 @@ const LoginAgent = () => {
               </button>
             </form>
           )}
-
-          <div className="text-center mt-4">
-            <a href="#" className="text-sm text-blue-600 hover:underline">Forgot Password?</a>
-          </div>
         </div>
       </div>
     </div>

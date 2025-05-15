@@ -131,7 +131,7 @@ const FarmerDetails: React.FC = () => {
       setError(null);
 
       try {
-        const token = localStorage.getItem("keycloak-token");
+        const token = localStorage.getItem("farm-infinity-admin-token");
 
         if (!token) {
           setError("No auth token found. Please login again.");

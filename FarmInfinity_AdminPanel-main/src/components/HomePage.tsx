@@ -1,6 +1,8 @@
-import { FaGoogle } from "react-icons/fa"; // Using react-icons for Google icon
+import { FaGoogle } from 'react-icons/fa';
 import { BsEye, BsEyeSlash } from "react-icons/bs"; // Icons for password visibility
 import { useState } from "react";
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
+
 
 const HomePage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,23 +58,23 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-center mb-6"> {/* Centered content */}
               <label className="flex items-center text-gray-700 text-sm">
                 <input type="checkbox" className="form-checkbox mr-2" />
                 Remember me
               </label>
             </div>
 
-            <div className="mb-6">
-              {/* Replace with your login logic */}
-              <button
-                className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline"
-                type="button"
-              >
-                Log In
-              </button>
+            <div className="flex flex-col space-y-4"> {/* Added vertical space */}
+              <Link to="/login-admin" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline text-center">
+                Log In as Admin
+              </Link>
+              <Link to="/login-agent" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline text-center">
+                Log In as Agent
+              </Link>
             </div>
 
+            {/* Removed "Or, Login with" and Google login button */}
             <div className="text-center text-gray-500 mb-6">Or, Login with</div>
 
             {/* Sign up with Google button */}

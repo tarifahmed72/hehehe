@@ -80,10 +80,16 @@ const LoginAdmin = () => {
         <div className="w-full max-w-md text-center text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-24 h-24 mx-auto mb-4">
             <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
-          </svg>
-          <h1 className="text-xl font-semibold">Welcome to the Admin Panel</h1>
-          <p className="mt-2 text-sm">Manage your Farm Infinity platform efficiently.</p>
-        </div>
+ </svg>
+ <h1 className="text-xl font-semibold">Welcome to the Admin Panel</h1>
+ <p className="mt-2 text-sm">Manage your Farm Infinity platform efficiently.</p>
+ {/* Add a link back to the home page */}
+ <div className="mt-6">
+ <button onClick={() => navigate('/')} className="text-sm text-blue-600 hover:underline">
+              Back to Home
+ </button>
+ </div>
+ </div>
       </div>
 
       {/* Right Column - Login Form */}
@@ -135,10 +141,6 @@ const LoginAdmin = () => {
             >
               Login
             </button>
-
-            <div className="mt-4 text-center">
-              <a href="#" className="text-sm text-blue-200 hover:underline">Forgot Password?</a>
-            </div>
           </form>
         </div>
       </div>
