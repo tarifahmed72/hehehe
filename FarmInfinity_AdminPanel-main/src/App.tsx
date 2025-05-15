@@ -15,7 +15,7 @@ import HomePage from "./components/HomePage";
 
 
 const PrivateRoute = ({ element }: any) => { // Removed allowedRoles prop
-  const isAuthenticated = localStorage.getItem("farm-infinity-admin-token"); // Check for token in local storage
+  const isAuthenticated = localStorage.getItem("default-auth-token"); // Check for token in local storage
 
   console.log("PrivateRoute rendered");
   console.log("isAuthenticated:", !!isAuthenticated);

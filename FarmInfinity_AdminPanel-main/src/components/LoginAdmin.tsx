@@ -14,7 +14,7 @@ const LoginAdmin = () => {
     setError(''); // Clear previous errors
 
     try { // Simulate a successful login by storing a default token
-      localStorage.setItem('default-login-token', defaultToken);
+      localStorage.setItem('default-auth-token', defaultToken);
       navigate('/dashboard'); // Redirect to dashboard on successful login
  console.log('Navigating to /dashboard');
     } catch (err) {
