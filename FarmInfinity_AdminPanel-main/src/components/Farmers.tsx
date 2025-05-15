@@ -16,6 +16,7 @@ const Farmers = () => {
   const navigate = useNavigate();
 
   const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
+  const [totalFarmers, setTotalFarmers] = useState(0);
 
   const [currentPage, setCurrentPage] = useState(1);
   const farmersPerPage = 100; // Set to 20 farmers per page
@@ -50,6 +51,7 @@ const Farmers = () => {
         }));
 
         setFarmers(fetchedFarmers);
+        setTotalFarmers(response.data.total_count || 0);
       } catch (err) {
         console.error("Error fetching farmers:", err);
         setError("Failed to fetch farmer data. Check token or permissions.");
@@ -75,7 +77,7 @@ const Farmers = () => {
     setSearchQuery(event.target.value);
   };
 
-  const totalPages = Math.ceil(farmers.length / farmersPerPage); // Calculate total pages based on the total number of farmers
+  const totalPages = Math.ceil(totalFarmers / farmersPerPage); // Calculate total pages based on the total number of farmers
 
 
   const handlePageChange = (pageNumber: number) => {
