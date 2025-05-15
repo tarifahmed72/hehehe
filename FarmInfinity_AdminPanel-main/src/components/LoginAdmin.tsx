@@ -1,70 +1,22 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
-import { jwtDecode } from 'jwt-decode';
 const LoginAdmin = () => {
+  const defaultToken = 'YOUR_DEFAULT_TOKEN_HERE'; // Placeholder for a default token
+
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
-
   const handleLogin = async (e: React.FormEvent) => {
  console.log('handleLogin called');
     e.preventDefault();
     setError(''); // Clear previous errors
 
- console.log('Attempting to login with username:', username);
-    try {
-      const params = new URLSearchParams();
-      params.append('username', username);
-      params.append('password', password);
-
-      const response = await axios.post(
-        'https://dev-api.farmeasytechnologies.com/api/login',
-        params.toString(),
-        {
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-        }
-      );
-            
- console.log('API Response:', response);
-      // Assuming the token is in response.data.access_token
-      const token = response.data.access_token;
-      if (token) {
- console.log('Token received:', token);
-        localStorage.setItem('farm-infinity-admin-token', token);
- console.log('Token set in local storage.');
-        navigate('/dashboard'); // Redirect to dashboard on successful login
+    try { // Simulate a successful login by storing a default token
+      localStorage.setItem('default-login-token', defaultToken);
+      navigate('/dashboard'); // Redirect to dashboard on successful login
  console.log('Navigating to /dashboard');
- // Decode the token to get user information, including the role
-        const decodedToken: any = jwtDecode(token);
-        const userRole = decodedToken.role; // Assuming 'role' is the claim name for the role
- // Store the role in local storage
- localStorage.setItem('user-role', userRole);
- console.log('User role set in local storage:', userRole);
-      } else {
-        setError('Login failed: No token received.');
-      }
-
-      // Start token refresh interval
-      setInterval(async () => {
-        const currentToken = localStorage.getItem('farm-infinity-admin-token');
-        if (currentToken) {
-          try {
-            const refreshResponse = await axios.post('https://dev-api.farmeasytechnologies.com/api/refresh-token', {
-              token: currentToken,
-            });
-            const newToken = refreshResponse.data.access_token;
-            if (newToken) {
-              localStorage.setItem('farm-infinity-admin-token', newToken);
-              console.log('Token refreshed successfully');
-            }
-          } catch (refreshError) {
-            console.error('Token refresh failed:', refreshError);
-          }
-        }
-      }, 300000); // Refresh every 5 minutes (300000 milliseconds)
     } catch (err) {
  console.error('Login error caught:', err);
       console.error('Login error:', err);

@@ -6,7 +6,6 @@ import { TbUserSquareRounded, TbCashBanknote } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
 import { Link } from "react-router-dom";
 
-import keycloak from '../keycloak';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); 
   
@@ -27,7 +26,7 @@ const Sidebar = () => {
 
         {/* Logout Button (Top Right) */}
         <div className={`absolute top-4 right-4`}>
-          <button onClick={() => keycloak.logout({ redirectUri: window.location.origin })} className="text-sm text-black hover:text-gray-700">
+          <button className="text-sm text-black hover:text-gray-700">
             Logout
           </button>
         </div>

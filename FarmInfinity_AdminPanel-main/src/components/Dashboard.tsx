@@ -14,7 +14,7 @@ const Dashboard = () => {
     const initKeycloak = async () => {
       try {
        
-        const token = localStorage.getItem("keycloak-token")
+        const token = localStorage.getItem("default-auth-token");
 
         // Fetch counts
         const [farmers, fpos, agents] = await Promise.all([
