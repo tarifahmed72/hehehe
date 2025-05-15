@@ -4,13 +4,12 @@ import { RiBankFill, RiDashboardLine } from "react-icons/ri";
 import { ImUsers } from "react-icons/im";
 import { TbUserSquareRounded, TbCashBanknote } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import keycloak from '../keycloak';
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); 
-  const navigate = useNavigate();
-
+  
   return (
     <>
       {/* Mobile Menu Toggle */}
