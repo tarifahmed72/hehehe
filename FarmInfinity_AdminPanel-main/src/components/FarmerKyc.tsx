@@ -27,7 +27,7 @@ const FarmerKyc: React.FC<FarmerKycProps> = ({ applicationId }) => {
       setErrorMsg('');
       setActivity(null);
 
-      const token = localStorage.getItem("keycloak-token");
+      const token = localStorage.getItem("default-auth-token");
 
         if (!token) {
           setLoading(false);

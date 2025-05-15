@@ -11,7 +11,7 @@ export default function ScoreCard({ farmerId, applicationId, financialYear}: pro
   useEffect(() => {
     async function fetchScoreCard() {
       try {
-        const token = localStorage.getItem("keycloak-token");
+        const token = localStorage.getItem("default-auth-token");
 
         if (!token) {
           return;
