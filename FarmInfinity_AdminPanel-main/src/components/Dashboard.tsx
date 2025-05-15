@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 const Dashboard = () => {
 
   
-  const [farmerCount, setFarmerCount] = useState<number | null>(25);
+  const [farmerCount, setFarmerCount] = useState<number | null>(null);
   const [fpoCount, setFpoCount] = useState<number | null>(null);
   const [agentCount, setAgentCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,7 +19,7 @@ const Dashboard = () => {
         // Fetch counts
         const [farmers, fpos, agents] = await Promise.all([
           fetch("https://dev-api.farmeasytechnologies.com/api/farmers/?page=1&limit=1", {
-            method: "GET",
+            method: "GET", // Changed API call to remove limit and page
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -44,7 +44,7 @@ const Dashboard = () => {
         ]);
         
         console.log(farmers)
-        setFarmerCount(farmers.total || 0);
+        setFarmerCount(farmers.total_count || 0); // Updated to use total_count
         console.log(fpos)
         setFpoCount(fpos.length || 0);
         console.log(agents)
