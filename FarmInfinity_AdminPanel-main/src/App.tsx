@@ -12,7 +12,6 @@ import FarmerApplication from "./components/FarmerApplication";
 
 function App() {
   return (
-    <Router>
       <div className="flex h-screen">
         <Sidebar />
         <div className="flex-1 overflow-auto">
@@ -36,7 +35,6 @@ function App() {
           </Routes>
         </div>
       </div>
-    </Router>
   );
 }
 
