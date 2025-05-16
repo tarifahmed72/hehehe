@@ -30,7 +30,7 @@ const FarmerApplication: React.FC = () => {
   useEffect(() => {
     const fetchApplications = async () => {
 
-      const token = localStorage.getItem('default-auth-token');
+      const token = localStorage.getItem('auth-token');
 
       if (!token) {
         setError("No auth token found. Please login again.");
