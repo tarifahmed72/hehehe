@@ -1,11 +1,7 @@
-import { FaGoogle } from 'react-icons/fa';
-import { BsEye, BsEyeSlash } from "react-icons/bs"; // Icons for password visibility
-import { useState } from "react";
 import { Link } from "react-router-dom"; // Import Link from react-router-dom
 
 
 const HomePage = () => {
-  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-gray-100">
@@ -24,75 +20,12 @@ const HomePage = () => {
             Enter to get unlimited access to data & information.
           </p>
 
-          <form>
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="email">
-                Email *
-              </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                id="email"
-                type="email"
-                placeholder="Enter your mail address"
-              />
-            </div>
-
-            <div className="mb-4">
-              <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
-                Password *
-              </label>
-              <div className="relative">
-                <input
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline pr-10"
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Enter password"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                >
-                  {showPassword ? <BsEyeSlash /> : <BsEye />}
-                </button>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center mb-6"> {/* Centered content */}
-              <label className="flex items-center text-gray-700 text-sm">
-                <input type="checkbox" className="form-checkbox mr-2" />
-                Remember me
-              </label>
-            </div>
-
-            <div className="flex flex-col space-y-4"> {/* Added vertical space */}
+          <div className="flex flex-col"> {/* Added vertical space */}
               <Link to="/login-admin" className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline text-center">
                 Log In as Admin
               </Link>
-              <Link to="/login-agent" className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded w-full focus:outline-none focus:shadow-outline text-center">
-                Log In as Agent
-              </Link>
             </div>
 
-            {/* Removed "Or, Login with" and Google login button */}
-            <div className="text-center text-gray-500 mb-6">Or, Login with</div>
-
-            {/* Sign up with Google button */}
-            <button
-              className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow w-full flex items-center justify-center"
-              type="button"
-            >
-              <FaGoogle className="mr-2 text-blue-500" />
-              Sign up with google
-            </button>
-
-            <div className="text-center mt-6 text-gray-700 text-sm">
-              Don't have an account?{" "}
-              <a className="text-blue-500 hover:text-blue-800" href="#">
-                Register here
-              </a>
-            </div>
-          </form>
         </div>
       </div>
 
