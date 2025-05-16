@@ -1,24 +1,39 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios'; // Make sure you have axios installed
 
 const LoginAdmin = () => {
-  const defaultToken = 'YOUR_DEFAULT_TOKEN_HERE'; // Placeholder for a default token
-
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
   const handleLogin = async (e: React.FormEvent) => {
- console.log('handleLogin called');
     e.preventDefault();
+    try {
     setError(''); // Clear previous errors
+      const response = await axios.post(
+        'https://dev-api.farmeasytechnologies.com/api/login',
+        new URLSearchParams({
+          username: username,
+          password: password
+        }),
+        {
+          headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+          },
+        }
+      );
 
-    try { // Simulate a successful login by storing a default token
-      localStorage.setItem('default-auth-token', defaultToken);
-      navigate('/dashboard'); // Redirect to dashboard on successful login
- console.log('Navigating to /dashboard');
+      // Assuming the API returns a token in the response data
+      const token = response.data.access_token; // Adjust this based on the actual API response structure
+
+      if (token) {
+        localStorage.setItem('auth-token', token); // Store the actual token
+        navigate('/dashboard'); // Redirect to dashboard on successful login
+      } else {
+        setError('Login failed. No token received.'); // Handle case where no token is returned
+      }
     } catch (err) {
- console.error('Login error caught:', err);
       console.error('Login error:', err);
       setError('Login failed. Please check your credentials.');
     }
@@ -31,13 +46,13 @@ const LoginAdmin = () => {
         {/* You can replace this div with an actual illustration or image */}
         <div className="w-full max-w-md text-center text-gray-600">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-24 h-24 mx-auto mb-4">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
- </svg>
- <h1 className="text-xl font-semibold">Welcome to the Admin Panel</h1>
- <p className="mt-2 text-sm">Manage your Farm Infinity platform efficiently.</p>
- {/* Add a link back to the home page */}
- <div className="mt-6">
- <button onClick={() => navigate('/')} className="text-sm text-blue-600 hover:underline">
+ <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+          </svg>
+          <h1 className="text-xl font-semibold">Welcome to the Admin Panel</h1>
+          <p className="mt-2 text-sm">Manage your Farm Infinity platform efficiently.</p>
+          {/* Add a link back to the home page */}
+          <div className="mt-6">
+            <button onClick={() => navigate('/')} className="text-sm text-blue-600 hover:underline">
               Back to Home
  </button>
  </div>
