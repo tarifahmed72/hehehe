@@ -18,7 +18,7 @@ const Dashboard = () => {
 
         // Fetch counts
         const [farmers, fpos, agents] = await Promise.all([
-          fetch("https://dev-api.farmeasytechnologies.com/api/farmers/?page=1&limit=1", {
+          fetch("https://dev-api.farmeasytechnologies.com/api/farmers/", { // Removed pagination params
             method: "GET", // Changed API call to remove limit and page
             headers: {
               "Authorization": `Bearer ${token}`,
