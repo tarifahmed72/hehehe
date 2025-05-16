@@ -10,54 +10,23 @@ interface Application {
   timestamp: string;
 }
 
-interface ApiResponse<T> {
-  data: T[];
-  total_count: number;
-
-}
-
 const FarmerApplication: React.FC = () => {
   const { id: farmerId } = useParams<{ id: string }>();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const [applicationsPerPage] = useState(10); // You can adjust this
-  const [totalApplications, setTotalApplications] = useState(0);
-  
 
   useEffect(() => {
     const fetchApplications = async () => {
-
-      const token = localStorage.getItem('auth-token');
-
-      if (!token) {
-        setError("No auth token found. Please login again.");
-        setLoading(false);
-        return;
-      }
-
       try {
         setLoading(true);
-        const offset = (currentPage - 1) * applicationsPerPage;
-        
-        const response = await axios.get<ApiResponse<Application>>(
-          `https://dev-api.farmeasytechnologies.com/api/applications/?farmer_id=${farmerId}&limit=${applicationsPerPage}&offset=${offset}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
+        const response = await axios.get(
+          `https://dev-api.farmeasytechnologies.com/api/applications/${farmerId}`
         );
-        setApplications(response.data.data || []);
-        setTotalApplications(response.data.total_count || 0); // Assuming API returns total count
+        setApplications(response.data || []);
       } catch (err) {
-        console.error("Error fetching applications:", err);
         setError('Failed to fetch applications.');
-        setApplications([]);
-        setTotalApplications(0);
       } finally {
         setLoading(false);
       }
@@ -66,13 +35,7 @@ const FarmerApplication: React.FC = () => {
     if (farmerId) {
       fetchApplications();
     }
-  }, [farmerId, currentPage, applicationsPerPage]); // Add pagination state to dependencies
-
-  // Change page
-  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
-  const totalPages = Math.ceil(totalApplications / applicationsPerPage);
-
+  }, [farmerId]);
 
   const handleRowClick = (appId: string) => {
     navigate(`/farmers_details/farmerId/${farmerId}/applicationId/${appId}`);
@@ -81,11 +44,11 @@ const FarmerApplication: React.FC = () => {
   const formatStatus = (status: number) => {
     switch (status) {
       case 1:
-        return { label: 'completed', className: 'bg-green-100 text-green-700' };
+        return { label: 'Approved', className: 'bg-green-100 text-green-700' };
       case 2:
-        return { label: 'lead', className: 'bg-red-100 text-red-700' };
+        return { label: 'Rejected', className: 'bg-red-100 text-red-700' };
       default:
-        return { label: 'not completed', className: 'bg-yellow-100 text-yellow-700' };
+        return { label: 'Pending', className: 'bg-yellow-100 text-yellow-700' };
     }
   };
 
@@ -111,7 +74,7 @@ const FarmerApplication: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {applications.map((app: Application) => {
+              {applications.map((app) => {
                 const { label, className } = formatStatus(app.status);
                 return (
                   <tr
@@ -133,21 +96,6 @@ const FarmerApplication: React.FC = () => {
               })}
             </tbody>
           </table>
-        </div>
-      )}
-
-      {/* Pagination Controls */}
-      {totalApplications > applicationsPerPage && (
-        <div className="flex justify-center mt-4">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50"
-          >
-            Previous
-          </button>
-          <span className="px-4 py-2 mx-1">Page {currentPage} of {totalPages}</span>
-          <button onClick={() => paginate(currentPage + 1)} disabled={currentPage === totalPages} className="px-4 py-2 mx-1 bg-gray-300 rounded disabled:opacity-50">Next</button>
         </div>
       )}
     </div>

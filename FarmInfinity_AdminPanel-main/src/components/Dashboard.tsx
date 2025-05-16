@@ -16,38 +16,37 @@ const Dashboard = () => {
        
         const token = localStorage.getItem("default-auth-token");
 
-        // Fetch counts
-        const [farmers, fpos, agents] = await Promise.all([
-          fetch("https://dev-api.farmeasytechnologies.com/api/farmers/", { // Removed pagination params
-            method: "GET", // Changed API call to remove limit and page
-            headers: {
-              "Authorization": `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }).then(res => res.json()), // <-- COMMA here, not semicolon
-          
-          fetch("https://dev-api.farmeasytechnologies.com/api/fpos/?skip=0&limit=1000", {
+        // Fetch farmers count
+        const farmersResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/farmers/", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }).then(res => res.json()),
-        
-          fetch("https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=1000", {
+          });
+        const farmers = await farmersResponse.json();
+        console.log(farmers);
+        setFarmerCount(farmers.total || 0);
+
+        // Fetch FPOs count
+        const fposResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/fpos/?skip=0&limit=1000", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
             },
-          }).then(res => res.json()),
-        ]);
-        
-        console.log(farmers)
-        setFarmerCount(farmers.total_count || 0); // Updated to use total_count
-        console.log(fpos)
+          });
+        const fpos = await fposResponse.json();
+        console.log(fpos);
         setFpoCount(fpos.length || 0);
-        console.log(agents)
+
+        // Fetch field agents count
+        const agentsResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=1000", {
+            method: "GET",
+            headers: {"Authorization": `Bearer ${token}`, "Content-Type": "application/json"},
+          });
+        const agents = await agentsResponse.json();
+        console.log(agents);
         setAgentCount(agents.length || 0);
       } catch (error) {
         console.error("Failed to initialize Keycloak or fetch data:", error);
