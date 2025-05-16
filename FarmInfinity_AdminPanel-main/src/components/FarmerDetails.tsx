@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import FarmerKyc from "./FarmerKyc";
+import { useNavigate } from "react-router-dom";
 import ScoreCard from "./Scorecard";
 interface Bio {
   id?: string;
@@ -117,6 +118,7 @@ const FarmerDetails: React.FC = () => {
   const [poa, setPoa] = useState<POAData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const navigate = useNavigate();
   
 
 
@@ -131,33 +133,28 @@ const FarmerDetails: React.FC = () => {
       setError(null);
 
       try {
-        const token = localStorage.getItem("default-auth-token");
+        const token = localStorage.getItem('auth-token');
 
         if (!token) {
           setError("No auth token found. Please login again.");
           setLoading(false);
           return;
         }
-        // Fetch Bio (Assuming no token required)
+
+        const headers = {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        };
+
+        // Fetch Bio History
         const bioHistoryResponse = await axios.get(
           `https://dev-api.farmeasytechnologies.com/api/bio-histories/${applicationId}?skip=0&limit=10`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
+          { headers }
         );
-
         if (bioHistoryResponse.data && bioHistoryResponse.data.length > 0) {
-          const bio_version_id = bioHistoryResponse.data[0].bio_version_id;
+ const bio_version_id = bioHistoryResponse.data[0].bio_version_id;
           const bioResponse = await axios.get<Bio>(
-            `https://dev-api.farmeasytechnologies.com/api/bio/${bio_version_id}`,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
+            `https://dev-api.farmeasytechnologies.com/api/bio/${bio_version_id}`
           );
           setBio(bioResponse.data);
         } else {
@@ -166,15 +163,11 @@ const FarmerDetails: React.FC = () => {
         }
 
         // Fetch KYC
+        // Assuming this endpoint requires the farmerId and token
         const kycResponse = await axios.get(
-          `https://dev-api.farmeasytechnologies.com/api/kyc-histories/${farmerId}`,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
+          `https://dev-api.farmeasytechnologies.com/api/kyc-histories/${farmerId}`,
+          { headers }
         );
-        console.log("KYC Response:", kycResponse.data);
 
         const poi_id = kycResponse.data[0].poi_version_id;
         console.log(kycResponse.data[0].poa_version_id);
@@ -183,42 +176,41 @@ const FarmerDetails: React.FC = () => {
         const poa_id = kycResponse.data[0].poa_version_id;
         setKyc(kycResponse.data);
         console.log("KYC Response:", kyc);
+
         // Fetch POI
         if (poi_id) {
           const poiResponse = await axios.get<POIData>(
-            `https://dev-api.farmeasytechnologies.com/api/poi/${poi_id}`,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
+            `https://dev-api.farmeasytechnologies.com/api/poi/${poi_id}`,
+            { headers }
           );
           console.log("POI Response:", poiResponse.data);
           setPoi(poiResponse.data);
         } else {
-          setPoi(null);
+          setPoi(null); // Ensure null state if no POI
         }
 
         // Fetch POA
         if (poa_id) {
           const poaResponse = await axios.get<POAData>(
-            `https://dev-api.farmeasytechnologies.com/api/poa/${poa_id}`,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
+            `https://dev-api.farmeasytechnologies.com/api/poa/${poa_id}`,
+            { headers }
           );
           console.log("POA Response:", poaResponse.data);
           setPoa(poaResponse.data);
         } else {
-          setPoa(null);
+          setPoa(null); // Ensure null state if no POA
+
         }
       } catch (err: any) {
         setError("Failed to fetch data: " + err.message);
         console.error("Fetch error:", err);
+        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          localStorage.removeItem('auth-token');
+          navigate('/login-admin');
+        }
       } finally {
         setLoading(false);
+        navigate('/login-admin');
       }
     };
 

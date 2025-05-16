@@ -19,16 +19,31 @@ const FarmerApplication: React.FC = () => {
 
   useEffect(() => {
     const fetchApplications = async () => {
+      const token = localStorage.getItem('auth-token');
+
+      if (!token) {
+        setError("No auth token found. Please login again.");
+        setLoading(false);
+        return;
+      }
+
       try {
         setLoading(true);
         const response = await axios.get(
-          `https://dev-api.farmeasytechnologies.com/api/applications/${farmerId}`
+          `https://dev-api.farmeasytechnologies.com/api/applications/${farmerId}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
         setApplications(response.data || []);
       } catch (err) {
+ if (axios.isAxiosError(err) && err.response?.status === 401) {
+ localStorage.removeItem('auth-token');
+ navigate('/login-admin');
+ }
         setError('Failed to fetch applications.');
-      } finally {
-        setLoading(false);
+ } finally {
+ setLoading(false);
       }
     };
 

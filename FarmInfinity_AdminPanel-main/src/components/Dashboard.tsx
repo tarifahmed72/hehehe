@@ -1,61 +1,86 @@
 import  { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Loader2 } from "lucide-react";
 
 const Dashboard = () => {
-
   
   const [farmerCount, setFarmerCount] = useState<number | null>(null);
   const [fpoCount, setFpoCount] = useState<number | null>(null);
   const [agentCount, setAgentCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const initKeycloak = async () => {
-      try {
-       
-        const token = localStorage.getItem("default-auth-token");
+    const fetchData = async () => {
+      const token = localStorage.getItem("auth-token");
 
+      if (!token) {
+        // If no token, redirect to login
+        navigate('/login-admin');
+        return;
+      }
+
+      try {
         // Fetch farmers count
         const farmersResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/farmers/", {
             method: "GET",
-            headers: {
-              "Authorization": `Bearer ${token}`,
+            headers: {"Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
             },
           });
-        const farmers = await farmersResponse.json();
+        const farmers = await farmersResponse.json(); // Assuming response is JSON
         console.log(farmers);
         setFarmerCount(farmers.total || 0);
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("auth-token");
+          navigate('/login-admin');
+        }
+        console.error("Failed to fetch farmers:", error);
+      }
 
+      try {
         // Fetch FPOs count
         const fposResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/fpos/?skip=0&limit=1000", {
             method: "GET",
             headers: {
               "Authorization": `Bearer ${token}`,
               "Content-Type": "application/json",
-            },
+            }
           });
-        const fpos = await fposResponse.json();
+        const fpos = await fposResponse.json(); // Assuming response is JSON
         console.log(fpos);
         setFpoCount(fpos.length || 0);
-
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("auth-token");
+          navigate('/login-admin');
+        }
+        console.error("Failed to fetch FPOs:", error);
+      }
+      
+      try {
         // Fetch field agents count
         const agentsResponse = await fetch("https://dev-api.farmeasytechnologies.com/api/field_agents/?skip=0&limit=1000", {
             method: "GET",
-            headers: {"Authorization": `Bearer ${token}`, "Content-Type": "application/json"},
+            headers: {"Authorization": `Bearer ${token}`, "Content-Type": "application/json"}
           });
-        const agents = await agentsResponse.json();
+        const agents = await agentsResponse.json(); // Assuming response is JSON
         console.log(agents);
         setAgentCount(agents.length || 0);
-      } catch (error) {
-        console.error("Failed to initialize Keycloak or fetch data:", error);
-      } finally {
+      } catch (error: any) {
+        if (error.response && error.response.status === 401) {
+          localStorage.removeItem("auth-token");
+          navigate('/login-admin');
+        }
+        console.error("Failed to fetch field agents:", error);
+      }
+      finally {
         setLoading(false);
       }
     };
-
-   initKeycloak()
+    fetchData(); // This useEffect dependency array is missing
   }, []);
 
   if (loading) {
@@ -64,7 +89,7 @@ const Dashboard = () => {
         <Loader2 className="h-10 w-10 animate-spin text-blue-600" />
       </div>
     );
-  }
+  } 
 
   
   return (

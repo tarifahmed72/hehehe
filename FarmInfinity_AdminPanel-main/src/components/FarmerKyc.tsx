@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 type FarmerKycProps = {
   applicationId?: string;
@@ -18,35 +19,41 @@ const FarmerKyc: React.FC<FarmerKycProps> = ({ applicationId }) => {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [activeTab, setActiveTab] = useState<'primary' | 'secondary'>('primary');
+  const navigate = useNavigate();
 
   const fetchActivity = async (selectedYear: string) => {
-    
     if (!applicationId) return;
+    const token = localStorage.getItem('auth-token');
+    if (!token) {
+      setErrorMsg("No auth token found. Please login again.");
+      return;
+    }
+
     try {
       setLoading(true);
       setErrorMsg('');
       setActivity(null);
 
-      const token = localStorage.getItem("default-auth-token");
-
-        if (!token) {
-          setLoading(false);
-          return;
+      const { data } = await axios.get(
+        `https://dev-api.farmeasytechnologies.com/api/fetch-activity-data/?application_id=${applicationId}&financial_year=${selectedYear}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
+      );
 
-      const { data } = await axios.get(`https://dev-api.farmeasytechnologies.com/api/fetch-activity-data/?application_id=${applicationId}&financial_year=${selectedYear}`,{
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      });
-      
       if (!data || Object.keys(data).length === 0) {
         setErrorMsg('No activity data available for selected financial year.');
       } else {
         setActivity(data);
       }
     } catch (error) {
+      if (axios.isAxiosError(error) && error.response?.status === 401) {
+        localStorage.removeItem('auth-token');
+        navigate('/login-admin');
+      }
       console.error('Error fetching activity:', error);
       setErrorMsg('Failed to fetch activity data.');
     } finally {
@@ -198,10 +205,8 @@ const FarmerKyc: React.FC<FarmerKycProps> = ({ applicationId }) => {
       <p><strong>No. of Cylinders:</strong> {data.no_of_cylinders}</p>
       <p><strong>Shed Capacity:</strong> {data.shed_capacity || 'N/A'}</p>
       <p><strong>Insurance:</strong> {data.insurance || 'N/A'}</p>
-      <p><strong>Breed:</strong> {data.breed || 'N/A'}</p>
       <p><strong>Facility Dimension:</strong> {data.shed_facility_dimension || 'N/A'}</p>
       {data.facilities?.length > 0 && <p><strong>Facilities:</strong> {data.facilities.map((f: any) => f.facility_name).join(', ')}</p>}
-
     </div>
   );
   const renderFisheryDetails = (data: any) => (

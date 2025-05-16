@@ -15,15 +15,60 @@ interface ApiFarmer {
 const Farmers = () => {
   const navigate = useNavigate();
 
-  const [farmers, setFarmers] = useState<ApiFarmer[]>([]);
-  const [totalFarmers, setTotalFarmers] = useState(0);
+  const hardcodedFarmers = [
+    {
+      id: 1,
+      name: "Kaustav",
+      gender: "Male",
+      phone: "8399051459",
+      city: "",
+      createdOn: "11-Nov-2024",
+      status: "Lead",
+      approval: "None",
+      amount: "",
+    },
+    {
+      id: 2,
+      name: "Pragyan",
+      gender: "Male",
+      phone: "7575985255",
+      city: "",
+      createdOn: "28-Aug-2024",
+      status: "Lead",
+      approval: "None",
+      amount: "",
+    },
+    {
+      id: 3,
+      name: "Santanu",
+      gender: "Male",
+      phone: "8011051894",
+      city: "",
+      createdOn: "28-Aug-2024",
+      status: "Lead",
+      approval: "None",
+      amount: "",
+    },
+    {
+      id: 4,
+      name: "Anant",
+      gender: "Male",
+      phone: "8822009123",
+      city: "Golaghat",
+      createdOn: "15-Jul-2024",
+      status: "Lead",
+      approval: "None",
+      amount: "Rs.5,000-Rs.10,000",
+    },
+  ];
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const farmersPerPage = 100; // Set to 20 farmers per page
+  const [farmers, setFarmers] = useState(hardcodedFarmers);
   const [searchQuery, setSearchQuery] = useState("");
-
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [currentPage, setCurrentPage] = useState(1); // State for current page
+  const [totalFarmers, setTotalFarmers] = useState(0);
+  const farmersPerPage = 5;
 
   useEffect(() => {
     const fetchFarmers = async () => {
@@ -35,33 +80,50 @@ const Farmers = () => {
         return;
       }
 
+      const skip = (currentPage - 1) * farmersPerPage;
+      const limit = farmersPerPage;
+
       try {
-        const response = await axios.get(`https://dev-api.farmeasytechnologies.com/api/farmers/?page=${currentPage}&limit=${farmersPerPage}`,
- {
+        const response = await axios.get(`https://dev-api.farmeasytechnologies.com/api/farmers/?skip=${skip}&limit=${limit}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+
+
         });
 
         // Adjust the data mapping to match the API response structure
-        const fetchedFarmers = response.data.data.map((farmer: ApiFarmer) => ({...farmer,
-          name: farmer.name || "N/A",
-          phone: farmer.phone_no || "N/A",
-          village: farmer.village || "N/A",
+        const fetchedFarmers = response.data.data.map((farmer: ApiFarmer) => ({
+          id: farmer.id,
+          name: farmer.name || "N/A", // Handle cases where name is null
+          gender: "N/A", // Gender is not present in the API response
+          phone: farmer.phone_no,
+          city: farmer.village || "N/A", // Assuming 'village' maps to city
+          createdOn: new Date(farmer.created_at).toLocaleDateString(), // Format the date
+          status: getStatusText(farmer.status), // Function to convert status code to text
+          approval: "N/A", // Approval is not present in the API response
+          amount: "N/A", // Amount is not present in the API response
+          // You might need to fetch additional details for gender, approval, and amount
         }));
 
-        setFarmers(fetchedFarmers);
-        setTotalFarmers(response.data.total_count || 0);
+        setFarmers(fetchedFarmers); // Replace hardcoded farmers with fetched data
+        setTotalFarmers(response.data.total); // Assuming the API returns a 'total' count
       } catch (err) {
-        console.error("Error fetching farmers:", err);
-        setError("Failed to fetch farmer data. Check token or permissions.");
+        console.error("Error fetching farmers:", err);        if (axios.isAxiosError(err) && err.response?.status === 401) {
+          localStorage.removeItem("auth-token");
+          navigate("/login-admin");
+        } else {
+          setError("Failed to fetch farmer data. Check token or permissions.");
+        }
       } finally {
         setLoading(false);
-      } 
-    }; 
-    fetchFarmers();  // This useEffect dependency array is missing
-  }, [currentPage]); // Empty dependency array to run once on mount
-  const getStatusText = (status: number | null) => {
+      }
+    };
+
+    fetchFarmers();
+  }, [currentPage]); // Re-run effect when currentPage changes
+
+  const getStatusText = (status: Number|null) => {
     switch (status) {
       case 1:
         return "Lead";
@@ -73,22 +135,29 @@ const Farmers = () => {
     }
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(event.target.value);
-  };
+  // Filtered farmers based on search query
+  const filteredFarmers = farmers.filter(
+    (farmer) =>
+      (farmer.name && farmer.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      farmer.phone.includes(searchQuery)
+  );
 
-  const totalPages = Math.ceil(totalFarmers / farmersPerPage); // Calculate total pages based on the total number of farmers
+  // Pagination logic remains for display, but fetching is done by API skip/limit
+  const currentFarmers = filteredFarmers; // Now 'farmers' state holds the data for the current page
+  const totalPages = Math.ceil(totalFarmers / farmersPerPage); // Calculate total pages based on total count
 
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page on search
   };
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <h1 className="text-3xl font-bold text-gray-800 mb-6">Farmers</h1>
-      <div className="flex flex-col md:flex-row items-center justify-between mb-6 space-y-4 md:space-y-0">
-        <input 
+    <div className="p-6">
+      <h1 className="text-2xl font-bold mb-6 text-gray-800">👨‍🌾 Farmer List</h1>
+
+      {/* Filter section */}
+      <div className="flex flex-col md:flex-row items-center justify-between gap-4 mb-6">
+        <input
           placeholder="🔍 Search farmers"
           value={searchQuery}
           onChange={handleSearchChange}
@@ -126,47 +195,47 @@ const Farmers = () => {
                 </tr>
               </thead>
               <tbody>
-                {farmers.map((farmer) => (
-                  <tr 
-                    key={farmer.phone_no}
-                    onClick={() => navigate(`/farmer-applications/${farmer.id}`)}
+                {currentFarmers.map((farmer) => (
+                  <tr
+                    key={farmer.id}
+                    onClick={() => navigate(`/farmers_applications/${farmer.id}`)}
                     className="hover:bg-blue-50 cursor-pointer border-b"
                   >
                     <td className="px-4 py-3 font-medium text-gray-900">{farmer.name}</td>
-                    <td className="px-4 py-3">{"N/A"}</td> {/* Assuming gender is not available in this API */}
-                    <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone_no}</td>
-                    <td className="px-4 py-3">{farmer.village || "—"}</td>
-                    <td className="px-4 py-3">{new Date(farmer.created_at).toLocaleDateString()}</td>
-                    <td className="px-4 py-3 text-yellow-600">{getStatusText(farmer.status)}</td>
-                    <td className="px-4 py-3">{"N/A"}</td>
-                    <td className="px-4 py-3">{"N/A"}</td>
+                    <td className="px-4 py-3">{farmer.gender}</td>
+                    <td className="px-4 py-3 text-blue-600 font-semibold">{farmer.phone}</td>
+                    <td className="px-4 py-3">{farmer.city || "—"}</td>
+                    <td className="px-4 py-3">{farmer.createdOn}</td>
+                    <td className="px-4 py-3 text-yellow-600">{farmer.status}</td>
+                    <td className="px-4 py-3">{farmer.approval}</td>
+                    <td className="px-4 py-3">{farmer.amount || "—"}</td>
                     <td className="px-4 py-3 text-center text-xl text-gray-500">⋮</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          {/* Pagination Controls */}
-          <div className="flex justify-center mt-6 space-x-2">
-            <button
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-              className="px-4 py-2 border rounded-lg disabled:opacity-50"
-            >
-              Previous
-            </button>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index + 1}
-                onClick={() => handlePageChange(index + 1)}
-                className={`px-4 py-2 border rounded-lg ${currentPage === index + 1 ? 'bg-blue-500 text-white' : ''}`}
-              >{index + 1}</button>
-            ))}
-            <button
-              onClick={() => handlePageChange(currentPage + 1)} disabled={currentPage === totalPages}
-              className="px-4 py-2 border rounded-lg disabled:opacity-50">Next</button>
-          </div>
 
+          {/* Pagination Controls */}
+          <div className="mt-4 flex justify-center gap-2">
+            <button
+              disabled={currentPage === 1} // Disable on first page
+              onClick={() => setCurrentPage((prev) => prev - 1)} // Go to previous page
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            >
+              ⬅ Prev
+            </button>
+            <span className="px-3 py-1">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage((prev) => prev + 1)}
+              className="px-3 py-1 border rounded disabled:opacity-50"
+            > {/* Go to next page */}
+              Next ➡
+            </button>
+          </div>
         </>
       )}
     </div>
