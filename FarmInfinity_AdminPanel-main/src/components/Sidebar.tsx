@@ -4,10 +4,16 @@ import { RiBankFill, RiDashboardLine } from "react-icons/ri";
 import { ImUsers } from "react-icons/im";
 import { TbUserSquareRounded, TbCashBanknote } from "react-icons/tb";
 import { HiMenu } from "react-icons/hi";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); 
+  const navigate = useNavigate(); // Initialize useNavigate
+
+  const handleLogout = () => {
+    localStorage.removeItem('auth-token'); // Remove the token from local storage
+    navigate('/login-admin'); // Redirect to the login page
+  };
   
   return (
     <>
@@ -26,7 +32,7 @@ const Sidebar = () => {
 
         {/* Logout Button (Top Right) */}
         <div className={`absolute top-4 right-4`}>
-          <button className="text-sm text-black hover:text-gray-700">
+          <button className="text-sm text-black hover:text-gray-700" onClick={handleLogout}> {/* Attach handleLogout */}
             Logout
           </button>
         </div>
